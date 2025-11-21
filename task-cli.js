@@ -3,6 +3,7 @@
 const readline = require('readline-sync');
 const fs = require('fs');
 const path = require('path');
+const { log } = require('console');
 
 let command=process.argv[2]; 
 
@@ -61,13 +62,54 @@ function promptForTask() {
     task.lastUpdated=new Date().toISOString();
     
    
-    tasks.push(task);
     saveTasks(tasks);
+    console.log(`Task added with ID: ${task.taskId}`);
          
 }
 
 // Update task
+// Fetch the task by ID 
+// Save the updated task list back to the file
+function taskToUpdate() {
+    const tasks = loadTasks();
+    const inputID=readline.question('Enter task ID to update: ')
+    const id = parseInt(inputID, 10);
+    const task = tasks.find(t => t.taskId === id);
+    if (!task) {
+        console.log(`Task with ID ${id} not found.`);
+        return;
+    } else {
+        return id;
+    }
+}
 
+const taskId=taskToUpdate();
+
+// Prompt user for new details, Leaving unchanged if input is blank
+function promptForUpdate(taskId) {
+    const rl = readline;
+    const tasks = loadTasks();
+    const task = tasks.find(t => t.taskId === taskId);
+
+
+    const newTitle=rl.question('Enter new title (leave blank to keep unchanged): ')
+    const newDescription=rl.question('Enter new descripton (leave blank to keep unchanged): ')
+    const newDueDate=rl.question('Enter new due date (leave blank to keep unchanged): ')
+    const newStatus=rl.question('Enter new status (leave blank to keep unchanged): ')
+    
+    task.title=newTitle.trim() !== '' ? newTitle : task.title;
+    task.description=newDescription.trim() !== '' ? newDescription : task.description;
+    task.dueDate=newDueDate.trim() !== '' ? newDueDate : task.dueDate;
+    task.status=newStatus.trim() !== '' ? newStatus : task.status;
+
+    task.lastUpdated=new Date().toISOString();
+    saveTasks(tasks);
+    
+
+}
+
+
+promptForUpdate(taskId);
 
 if (command=="view-tasks"){
  loadTasks();    
