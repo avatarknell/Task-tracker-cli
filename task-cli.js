@@ -16,6 +16,7 @@ function getNextTaskId(tasks) {
         : 1;
 }
 
+
 // Read tasks from the JSON file
 function loadTasks() {
     try {
@@ -30,6 +31,7 @@ function loadTasks() {
     }
 }
 
+const tasks = loadTasks();
 // Write tasks to the JSON file
 function saveTasks(tasks) {
     try {
@@ -44,7 +46,7 @@ function promptForTask() {
     const rl = readline;
 
 
-    const tasks = loadTasks();
+    
     const task={};
     
     const title=rl.question('Enter task title: ');
@@ -70,7 +72,8 @@ function promptForTask() {
 // Update task
 // Fetch the task by ID 
 // Save the updated task list back to the file
-function taskToUpdate() {
+//Returns taskID
+function getTaskId() {
     const tasks = loadTasks();
     const inputID=readline.question('Enter task ID to update: ')
     const id = parseInt(inputID, 10);
@@ -83,7 +86,7 @@ function taskToUpdate() {
     }
 }
 
-const taskId=taskToUpdate();
+const taskId=getTaskId;
 
 // Prompt user for new details, Leaving unchanged if input is blank
 function promptForUpdate(taskId) {
@@ -105,17 +108,42 @@ function promptForUpdate(taskId) {
     task.lastUpdated=new Date().toISOString();
     saveTasks(tasks);
     
+    console.log(`Task with ID ${taskId} updated.`);
+    console.log(tasks[taskId]);
+    
 
 }
 
+// Delete task Function
+function deleteTask(taskId) {
+    const tasks = loadTasks();
+    const task=tasks.find(t=>t.taskId===taskId);
+   if (!task) {
+        console.log(`Task with ID ${taskId} not found.`);
+        return;
+    }
+    const index=tasks.indexOf(task);
+    tasks.splice(index,1);
+    saveTasks(tasks);
+    console.log(`Task with ID ${taskId} deleted.`);
+}
 
-promptForUpdate(taskId);
+// Fetch the task by ID 
+// Save the updated task list back to the file
+
+
 
 if (command=="view-tasks"){
- loadTasks();    
+ console.log(loadTasks());    
 }
 if (command=="add-task"){
  promptForTask();    
+}
+if (command=="update-task"){
+ promptForUpdate(taskId);    
+}
+if (command=="delete-task"){
+ deleteTask(taskId);     
 }
 
 
