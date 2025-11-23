@@ -32,6 +32,17 @@ function loadTasks() {
 }
 
 const tasks = loadTasks();
+
+
+//Function to load task list as table
+function loadTaskList() {
+    const tasks = loadTasks();
+    const taskList= tasks.map(task => ({ taskId: task.taskId, title: task.title, status: task.status, dueDate: task.dueDate }));
+    console.table(taskList);
+    
+} 
+
+
 // Write tasks to the JSON file
 function saveTasks(tasks) {
     try {
@@ -144,6 +155,9 @@ if (command=="update-task"){
 }
 if (command=="delete-task"){
  deleteTask(taskId);     
+}
+if (command=="tasks"){
+    loadTaskList();
 }
 
 
